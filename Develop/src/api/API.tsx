@@ -1,24 +1,29 @@
 const searchGithub = async () => {
   try {
     const start = Math.floor(Math.random() * 100000000) + 1;
-    // console.log(import.meta.env);
     const response = await fetch(
-      `https://api.github.com/users?since=${start}`,
+      `https://api.github.com/users?since=${start}&per_page=10`,
       {
         headers: {
           Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`,
         },
       }
     );
-    // console.log('Response:', response);
-    const data = await response.json();
+
     if (!response.ok) {
-      throw new Error('invalid API response, check the network tab');
+      throw new Error("Invalid API response");
     }
-    // console.log('Data:', data);
-    return data;
+
+    const users = await response.json();
+
+    // Fetch detailed user profiles in parallel
+    const detailedUsers = await Promise.all(
+      users.map((user: { login: string }) => searchGithubUser(user.login))
+    );
+
+    return detailedUsers;
   } catch (err) {
-    // console.log('an error occurred', err);
+    console.error("An error occurred while fetching candidates:", err);
     return [];
   }
 };
@@ -30,13 +35,15 @@ const searchGithubUser = async (username: string) => {
         Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`,
       },
     });
-    const data = await response.json();
+
     if (!response.ok) {
-      throw new Error('invalid API response, check the network tab');
+      throw new Error("Invalid API response");
     }
+
+    const data = await response.json();
     return data;
   } catch (err) {
-    // console.log('an error occurred', err);
+    console.error(`Error fetching user ${username}:`, err);
     return {};
   }
 };
