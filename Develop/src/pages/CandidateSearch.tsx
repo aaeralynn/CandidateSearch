@@ -1,15 +1,6 @@
 import { useEffect, useState } from "react";
 import { searchGithub, searchGithubUser } from "../api/API";
-
-interface Candidate {
-  avatar_url: string;
-  name: string;
-  login: string;
-  location: string;
-  email: string;
-  html_url: string;
-  company: string;
-}
+import { Candidate } from "../interfaces/Candidate.interface"; // Import Candidate interface
 
 const CandidateSearch = () => {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
@@ -48,20 +39,23 @@ const CandidateSearch = () => {
   }, []);
 
   const handleAccept = () => {
-    const saved = JSON.parse(localStorage.getItem("savedCandidates") || "[]");
-    saved.push(candidates[currentIndex]);
-    localStorage.setItem("savedCandidates", JSON.stringify(saved));
-    setCurrentIndex((prev) => prev + 1);
+    if (candidates[currentIndex]) {
+      const saved = JSON.parse(localStorage.getItem("savedCandidates") || "[]");
+      saved.push(candidates[currentIndex]);
+      localStorage.setItem("savedCandidates", JSON.stringify(saved));
+      setCurrentIndex((prev) => prev + 1); // Move to the next candidate
+    }
   };
 
   const handleReject = () => {
-    setCurrentIndex((prev) => prev + 1);
+    setCurrentIndex((prev) => prev + 1); // Move to the next candidate without saving
   };
 
   if (loading) return <p>Loading candidates...</p>;
 
-  if (noMoreCandidates || currentIndex >= candidates.length)
-    return <p>No more candidates to review.</p>;
+  if (noMoreCandidates || currentIndex >= candidates.length) {
+    return <p>No more candidates to review.</p>; // Show when no more candidates are available
+  }
 
   const candidate = candidates[currentIndex];
 

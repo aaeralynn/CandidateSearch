@@ -15,11 +15,11 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <CandidateSearch />,
+        element: <CandidateSearch />, // Default route for the main page
       },
       {
-        path: "/SavedCandidates",
-        element: <SavedCandidates />,
+        path: "saved", // Updated path to be lowercase for saved candidates
+        element: <SavedCandidates />, // Page showing saved candidates
       },
     ],
   },
