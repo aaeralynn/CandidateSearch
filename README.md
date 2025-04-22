@@ -66,7 +66,7 @@ Each candidate shows:
 ### Clone the Repository  
 ```bash
 git clone <https://github.com/yourusername/candidate-search-app>
-cd candidate-search-app
+cd into develop
 Install Dependencies
 npm install
 
